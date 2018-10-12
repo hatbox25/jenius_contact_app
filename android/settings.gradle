@@ -1,0 +1,3 @@
+rootProject.name = 'jenius_contact_app'
+
+include ':app'
