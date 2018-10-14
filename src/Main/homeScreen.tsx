@@ -4,10 +4,12 @@ import {
   Image, TouchableOpacity, Alert, Modal, ActivityIndicator
 } from 'react-native';
 import * as _ from 'lodash';
-
+import FAB from 'react-native-fab'
+import Icon from 'react-native-vector-icons/Ionicons';
 import { Loading } from './Components/Loading';
 
 import homeRestService from './homeRest';
+import { Actions } from 'react-native-router-flux';
 
 export default class HomeComponent extends Component<any> {
   api = new homeRestService;
@@ -58,13 +60,24 @@ export default class HomeComponent extends Component<any> {
               <View style={index !== 0 ? { borderTopWidth: 1, borderTopColor: '#9b9b9b' } : {}}>
                 <TouchableOpacity
                   style={{ flexDirection: 'row', paddingVertical: 10, alignItems: 'center' }}
+                  onPress={() => {
+                    Actions.detail({
+                      title: `${_.get(item, 'firstName')} ${_.get(item, 'lastName')}`,
+                      id: _.get(item, 'id')
+                    });
+                  }}
                   onLongPress={() => {
                     Alert.alert(
                       `${_.get(item, 'firstName')} ${_.get(item, 'lastName')}`,
                       'Select operation for this contact',
                       [
                         {
-                          text: 'Preview', onPress: () => { }
+                          text: 'Preview', onPress: () => {
+                            Actions.detail({
+                              title: `${_.get(item, 'firstName')} ${_.get(item, 'lastName')}`,
+                              id: _.get(item, 'id')
+                            })
+                          }
                         }, {
                           text: 'Do Nothing', onPress: () => { }
                         }, {
@@ -99,6 +112,22 @@ export default class HomeComponent extends Component<any> {
           }}
         />
 
+        <FAB
+          buttonColor='#0f4270'
+          iconTextColor='#FFFFFF'
+          onClickAction={() => {
+            Actions.addContact({
+              onSubmit: (value: any) => {
+                this.api.addContact(value).subscribe(() => {
+                  Actions.reset('home');
+                }, (err) => { })
+              },
+              title: 'Create Contact'
+            });
+          }}
+          visible={true}
+          iconTextComponent={<Icon name='md-add' />}
+        />
         <Loading loading={_.get(state, 'loading')} />
       </View>
     );

@@ -2,8 +2,9 @@ import * as React from 'react';
 
 GLOBAL.XMLHttpRequest = GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest;
 
-import { Drawer, Router, Scene, Stack, Actions } from 'react-native-router-flux';
-import { Text, DeviceEventEmitter, BackHandler, Alert } from 'react-native';
+import { Router, Scene, Stack, Actions } from 'react-native-router-flux';
+import { DeviceEventEmitter, BackHandler, Alert } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { connect, Provider } from 'react-redux';
 import * as _ from 'lodash';
 
@@ -13,6 +14,8 @@ const ConnectedRouter = connect()(Router);
 
 import SplashScreen from 'react-native-splash-screen';
 import HomeComponent from './src/Main/homeScreen';
+import DetailComponent from './src/Main/detailScreen';
+import FormComponent from './src/Main/formScreen';
 
 export default class App extends React.Component<any> {
   backPressSubscriptions: any;
@@ -75,11 +78,19 @@ export default class App extends React.Component<any> {
 
     return (
       <Provider store={STORE}>
-        <ConnectedRouter
-        // onStateChange={() => { console.log(Actions.currentScene); }}
-        >
+        <ConnectedRouter>
           <Stack key='root'>
-            <Scene key='home' component={HomeComponent} hideNavBar={true} initial />
+            <Scene key='home' component={HomeComponent} initial hideNavBar />
+            <Scene key='detail' component={DetailComponent}
+              renderBackButton={() => <Icon name={'md-arrow-back'} color={'#fff'} size={24} style={{ paddingHorizontal: 20 }} onPress={Actions.pop} />}
+              titleStyle={{ color: '#fff' }}
+              navigationBarStyle={{ backgroundColor: '#0f4270', color: '#fff' }}
+            />
+            <Scene key='addContact' component={FormComponent}
+              renderBackButton={() => <Icon name={'md-arrow-back'} color={'#fff'} size={24} style={{ paddingHorizontal: 20 }} onPress={Actions.pop} />}
+              titleStyle={{ color: '#fff' }}
+              navigationBarStyle={{ backgroundColor: '#0f4270', color: '#fff' }}
+            />
           </Stack>
 
         </ConnectedRouter>
